@@ -36,26 +36,31 @@ def evalRNN_Forecastor(thrs1, thrs2, rmse, n_steps, mdl, custIds_benign, y_labs_
 
   
   for i in range(len(X_c)):
+      #Get the honest data for the current meter i
       honest_data = testData[custIDs[i],:]
       cur_data = np.array(X_c[i][:])
   
+      #Format honest data by reshaping and splitting into the input and output subsets
       honest_data = honest_data.reshape(-1, 1).astype('float64')
   
       honest_data_X, honest_data_y = split_sequence(honest_data, n_steps)
   
       honest_data_X = honest_data_X.reshape(honest_data_X.shape[0],honest_data_X.shape[1],1)
-  
+
+      #Retrieve the model's predictions for current meter i based on the honest data
       predictions = mdl.predict(honest_data_X).astype('float64')
       curRMSE = rmse[custIDs[i]]
+      #Set threshold1 (eps) equal to meter i's RMSE that was calculated during training * .40
       eps = (curRMSE * .40)
-  
+      
       cur_data = cur_data.reshape(-1,1).astype('float64')
   
       cur_data_X, cur_data_y = split_sequence(cur_data, n_steps)
       
-      
+      #check if current data X_c[i] is malicious or benign
       cur_res = isUnderAttack(cur_data_y,predictions, curRMSE, eps, thrs1, thrs2)
   
+      #If meter is malicious, label as 1. If meter is benign, label as 0
       if cur_res:
           overall_res.append(1)
           

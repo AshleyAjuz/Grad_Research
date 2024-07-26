@@ -218,7 +218,7 @@ def RNN_forecastor(dataset, start_tind, end_tind, n_steps, my_path, filename):
       curRMSE = np.sqrt(mean_squared_error(y_val[i:i+sequence], predicted_results[i:i+sequence]))
       rmse.append(curRMSE)
 
-    AvgTrainingRMSE = evaluateTraining(y_val, predicted_results)
+    #AvgTrainingRMSE = evaluateTraining(y_val, predicted_results)
 
 
     #Return the model's predictions
